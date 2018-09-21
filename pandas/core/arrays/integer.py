@@ -541,17 +541,20 @@ class IntegerArray(ExtensionArray, ExtensionOpsMixin):
 
         # may need to fill infs
         # and mask wraparound
-        if is_float_dtype(result):
-            mask |= (result == np.inf) | (result == -np.inf)
+        # if is_float_dtype(result):
+        #     mask |= (result == np.inf) | (result == -np.inf)
 
         # if we have a float operand we are by-definition
         # a float result
         # or our op is a divide
-        if ((is_float_dtype(other) or is_float(other)) or
-                (op_name in ['rtruediv', 'truediv', 'rdiv', 'div'])):
+        # if ((is_float_dtype(other) or is_float(other)) or
+        #         (op_name in ['rtruediv', 'truediv', 'rdiv', 'div'])):
+        if is_float_dtype(result):
             result[mask] = np.nan
             return result
 
+        # if is_float_dtype(result):
+        #     return result
         return type(self)(result, mask, copy=False)
 
     @classmethod
@@ -588,7 +591,6 @@ class IntegerArray(ExtensionArray, ExtensionOpsMixin):
 
             with np.errstate(all='ignore'):
                 result = op(self._data, other)
-
             # divmod returns a tuple
             if op_name == 'divmod':
                 div, mod = result
@@ -626,3 +628,4 @@ for dtype in ['int8', 'int16', 'int32', 'int64',
     setattr(module, classname, dtype_type)
 
     _dtypes[dtype] = dtype_type()
+    _dtypes[dtype].itemsize = attributes_dict['type'].itemsize

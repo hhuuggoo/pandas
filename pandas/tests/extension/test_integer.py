@@ -224,3 +224,10 @@ class TestGroupby(base.BaseGroupbyTests):
     def test_groupby_extension_agg(self, as_index, data_for_grouping):
         super(TestGroupby, self).test_groupby_extension_agg(
             as_index, data_for_grouping)
+
+
+from pandas.util.testing import assert_series_equal
+def test_uint_subtraction():
+    baseline = pd.Series([1, 1, 1]) - pd.Series([1, 2, 3], dtype='uint64')
+    test = pd.Series([1, 1, 1], dtype='int64') - pd.Series([1, 2, 3], dtype='UInt64')
+    assert_series_equal(baseline, test)
